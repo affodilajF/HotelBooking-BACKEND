@@ -28,24 +28,24 @@ public class UserService {
     @Transactional
     public void register(RegisterUserRequest request){
         Set<ConstraintViolation<RegisterUserRequest>> constraintViolations = validator.validate(request);
+
         if(constraintViolations.size() != 0){
-//            error
             throw new ConstraintViolationException(constraintViolations);
         }
-
 //        check di db dah ada belom user nya
-        if(userRepository.existsById(request.getUsername())){
-//            throw new ApiException("Username already registered");
+        if(userRepository.existsByUsername(request.getUsername())){
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Username already registered");
         }
 
         User user = new User();
+
         user.setUsername(request.getUsername());
         user.setPassword(BCrypt.hashpw(request.getPassword(), BCrypt.gensalt()));
         user.setName(request.getName());
+
         userRepository.save(user);
     }
 
-    public void login(RegisterUserRequest request){}
+
 
 }

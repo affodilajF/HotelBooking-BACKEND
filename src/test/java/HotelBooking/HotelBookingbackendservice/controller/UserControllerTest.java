@@ -3,46 +3,49 @@ package HotelBooking.HotelBookingbackendservice.controller;
 import static org.junit.jupiter.api.Assertions.*;
 
 
+import HotelBooking.HotelBookingbackendservice.entity.User;
 import HotelBooking.HotelBookingbackendservice.model.User.RegisterUserRequest;
 import HotelBooking.HotelBookingbackendservice.model.WebResponse;
 import HotelBooking.HotelBookingbackendservice.repository.UserRepository;
+import HotelBooking.HotelBookingbackendservice.security.BCrypt;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@EnableWebMvc
+//@EnableWebMvc
 class UserControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @Autowired
     private UserRepository userRepository;
 
     @Autowired
     private ObjectMapper objectMapper;
 
-    @BeforeEach
-    void setUp(){
+    @AfterEach
+    void tearDown(){
         userRepository.deleteAll();
     }
 
     @Test
-    void testRegisterSuccess() throws Exception {
+    void testSignUpSuccess() throws Exception {
         RegisterUserRequest request = new RegisterUserRequest();
         request.setUsername("test_usn");
         request.setName("test_name");
@@ -60,4 +63,5 @@ class UserControllerTest {
                     assertEquals("OK", response.getData());
                 });
     }
+    
 }
