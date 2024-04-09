@@ -63,5 +63,57 @@ class UserControllerTest {
                     assertEquals("OK", response.getData());
                 });
     }
-    
+
+    @Test
+    void testSignUpDuplicate() throws Exception {
+
+        User user = new User();
+        user.setUsername("test_usn");
+        user.setName("test_name");
+        user.setPassword(BCrypt.hashpw("test_passwd", BCrypt.gensalt()));
+        userRepository.save(user);
+
+        RegisterUserRequest request = new RegisterUserRequest();
+        request.setUsername("test_usn");
+        request.setName("test_name");
+        request.setPassword("test_passwd");
+
+        mockMvc.perform(
+                        post("/api/v1/user-registration")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON_VALUE) // Explicitly set content type
+                                .content(objectMapper.writeValueAsString(request))
+                )
+                .andExpect(
+                        status().isBadRequest()
+                )
+                .andDo(result -> {
+                    WebResponse<String> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {});
+                    assertNotNull(response.getErrors());
+                });
+    }
+
+    @Test
+    void testSignUpInvalidData() throws Exception {
+
+        RegisterUserRequest request = new RegisterUserRequest();
+        request.setUsername("");
+        request.setName("");
+        request.setPassword("test_passwd");
+
+        mockMvc.perform(
+                        post("/api/v1/user-registration")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON_VALUE) // Explicitly set content type
+                                .content(objectMapper.writeValueAsString(request))
+                )
+                .andExpect(
+                        status().isBadRequest()
+                )
+                .andDo(result -> {
+                    WebResponse<String> response = objectMapper.readValue(result.getResponse().getContentAsString(), new TypeReference<>() {});
+                    assertNotNull(response.getErrors());
+                });
+    }
+
 }
