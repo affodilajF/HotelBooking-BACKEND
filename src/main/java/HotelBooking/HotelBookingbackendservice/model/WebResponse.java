@@ -1,4 +1,4 @@
-package HotelBooking.model;
+package HotelBooking.HotelBookingbackendservice.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,5 +12,5 @@ import lombok.NoArgsConstructor;
 
 public class WebResponse <T> {
     private T data;
-    private String error;
+    private String errors;
 }
